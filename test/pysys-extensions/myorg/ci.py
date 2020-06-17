@@ -44,9 +44,9 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 	def isEnabled(self, **kwargs):
 		return os.getenv('GITHUB_ACTIONS','')=='true'
 
-	def outputGitHubCommand(cmd, value=u'', params=u'', ):
+	def outputGitHubCommand(self, cmd, value=u'', params=u'', ):
 		# syntax is: ::workflow-command parameter1={data},parameter2={data}::{command value}
-		stdoutPrint(u':: %s%s%s'%(cmd, u' '+params if params else u'', u'::%s'%value if value else u''))
+		stdoutPrint(u'::%s%s%s'%(cmd, u' '+params if params else u'', u'::%s'%value if value else u''))
 
 	def setup(self, numTests=0, cycles=1, xargs=None, threads=0, testoutdir=u'', runner=None, **kwargs):
 		self.runid = os.path.basename(testoutdir)
@@ -57,14 +57,14 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 			# if setting was not overridden by user, default for CI is 
 			# to only print failures since otherwise the output is too long 
 			# and hard to find the logs of interest
-			runner.printLogs = PrintLogs.FAILURES
+			pass #runner.printLogs = PrintLogs.FAILURES
 		
 		self.outputGitHubCommand(u'startGroup', self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it, 
 		# but must explicitly disable bright colors since it doesn't yet support that
 		runner.project.formatters.stdout.color = True
-		ColorLogFormatter.configureANSIEscapeCodes(bright=False)
+		#ColorLogFormatter.configureANSIEscapeCodes(bright=False)
 
 	def cleanup(self, **kwargs):
 		# invoked after all tests but before summary is printed, 
