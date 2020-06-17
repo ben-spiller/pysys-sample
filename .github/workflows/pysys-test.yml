@@ -37,7 +37,7 @@ jobs:
         working-directory: test
         #continue-on-error: true
         run: |
-          python pysys.py run --threads=auto --purge --record --mode=ALL -XpythonCoverage
+          python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage
 
       - name: Upload logs
         uses: actions/upload-artifact@v2
