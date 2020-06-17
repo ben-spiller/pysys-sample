@@ -36,8 +36,6 @@ jobs:
       - name: Test with PySys
         working-directory: test
         continue-on-error: true
-        env:
-          PYSYS_COLOR: true
         run: |
           pysys.py run --threads=auto --purge --record --mode=ALL -XpythonCoverage
           echo "::set-output name=action_fruit::strawberry"

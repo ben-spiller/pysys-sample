@@ -59,17 +59,17 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 			# and hard to find the logs of interest
 			pass #runner.printLogs = PrintLogs.FAILURES
 		
-		self.outputGitHubCommand(u'startGroup', self.runid)
+		self.outputGitHubCommand(u'group', self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it, 
 		# but must explicitly disable bright colors since it doesn't yet support that
 		runner.project.formatters.stdout.color = True
-		#ColorLogFormatter.configureANSIEscapeCodes(bright=False)
+		ColorLogFormatter.configureANSIEscapeCodes(bright=False)
 
 	def cleanup(self, **kwargs):
 		# invoked after all tests but before summary is printed, 
 		# a good place to close the folding detail section
-		self.outputGitHubCommand(u'endGroup')
+		self.outputGitHubCommand(u'endgroup')
 
 	def processResult(self, testObj, cycle=0, testTime=0, testStart=0, runLogOutput=u'', **kwargs):
 		# nothing to do for this CI provider as it doesn't collect results, we use the 
