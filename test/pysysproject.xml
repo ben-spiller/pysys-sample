@@ -19,14 +19,15 @@
 	<property name="verboseWaitForGrep" value="true"/>
 
 	<!-- Custom test framework extensions, if needed -->
+	<pythonpath value="${testRootDir}/pysys-extensions"/>
 	<!--
-	<pythonpath value="../framework" relative="true" />
 	<runner classname="MyRunner" module="my.organization"/>
 	<maker classname="MyTestMaker" module="my.organization"/>
 	-->
 
 	<writers>
 		<writer classname="TravisCIWriter" module="pysys.writer.ci"></writer>
+		<writer classname="GitHubActionsCIWriter" module="myorg.ci"></writer>
 
 		<writer classname="JUnitXMLResultsWriter" module="pysys.writer">
 			<property name="outputDir" value="${testRootDir}/pysys-junit-report"/>
