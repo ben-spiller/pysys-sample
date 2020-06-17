@@ -8,8 +8,9 @@ class PySysTest(BaseTest):
 		stdoutPrint('::error file=test/correctness/MyApp_cor_002/run.py,line=9,col=6::This is a test failure in 002')
 		stdoutPrint('::error::This is a 1 multi-line%0Amessage')
 		stdoutPrint('::error::This is a message with <h1>Heading</h2> < angle brackets')
-		stdoutPrint('::error::This is a message with % in it')
-		stdoutPrint('::error::This is a 1 multi-line%s- end of message'%(100*'0A   message'))
+		stdoutPrint('::error::This is a message with % and %a and %x and %% and %25 in it')
+		stdoutPrint('::error::This is a 1 multi-line%s- end of message'%(100*'%0A   message'))
+		stdoutPrint('::error::This is a 2 multi-line%s- end of message'%(1000*'%0A   message'))
 		stdoutPrint('::error::This is a long message %s- end of message'%(10000*'1234567890'))
 		stdoutPrint('::error::This is a 3 message with :: colons : all over the place\\oh yes!')
 

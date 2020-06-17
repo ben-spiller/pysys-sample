@@ -34,7 +34,7 @@
 		</writer>
 		
 		<writer classname="ConsoleSummaryResultsWriter" module="pysys.writer">
-			<property name="showOutputDir" value="false"/>
+			<property name="showOutputDir" value="true"/>
 			<property name="showOutcomeReason" value="true"/>
 		</writer>
 	</writers>
