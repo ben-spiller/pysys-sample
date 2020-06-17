@@ -47,6 +47,8 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 	
 	So make sure we don't use up our allocation of annotations with less important ones and then be unable to add a 
 	summary annotation. 
+	
+	NB: there is also a 64kB limit on the total length of the annotation
 	"""
 	
 	def isEnabled(self, **kwargs):
