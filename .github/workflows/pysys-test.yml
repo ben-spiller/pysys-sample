@@ -38,10 +38,6 @@ jobs:
         continue-on-error: true
         run: |
           pysys.py run --threads=auto --purge --record --mode=ALL -XpythonCoverage
-          echo "::set-output name=action_fruit::strawberry"
-          echo "::debug::Set the Octocat variable"
-          echo "::warning file=pysysproject.xml,line=2,col=5::Missing semicolon"
-          echo "::error file=test/pysysproject.xml,line=2,col=5::Some error"
 
       - name: Upload logs
         uses: actions/upload-artifact@v2

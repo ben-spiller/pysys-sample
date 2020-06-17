@@ -59,7 +59,7 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 			# and hard to find the logs of interest
 			pass #runner.printLogs = PrintLogs.FAILURES
 		
-		self.outputGitHubCommand(u'group', self.runid)
+		self.outputGitHubCommand(u'group', u'Logs for failed tests: %s' % self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it
 		runner.project.formatters.stdout.color = True
