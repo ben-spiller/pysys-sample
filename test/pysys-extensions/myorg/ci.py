@@ -36,13 +36,17 @@ log = logging.getLogger('pysys.writer')
 
 class GitHubActionsCIWriter(BaseRecordResultsWriter):
 	"""
-	Writer for GitHub Actions. Only enabled when running under Travis (specifically, 
-	if the ``TRAVIS=true`` environment variable is set).
+	Writer for GitHub Actions. Only enabled when running under GitHub Actions (specifically, 
+	if the ``GITHUB_ACTIONS=true`` environment variable is set).
 	
 	"""
 		
 	def isEnabled(self, **kwargs):
-		return os.getenv('TRAVIS','')=='true'
+		return os.getenv('GITHUB_ACTIONS','')=='true'
+
+	def outputGitHubCommand(cmd, value=u'', params=u'', ):
+		# syntax is: ::workflow-command parameter1={data},parameter2={data}::{command value}
+		stdoutPrint(u':: %s%s%s'%(cmd, u' '+params if params else u'', u'::%s'%value if value else u''))
 
 	def setup(self, numTests=0, cycles=1, xargs=None, threads=0, testoutdir=u'', runner=None, **kwargs):
 		self.runid = os.path.basename(testoutdir)
@@ -50,12 +54,12 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 		self.testsSoFar = 0
 		
 		if runner.printLogs is None:
-			# if setting was not overridden by user, default for Travis is 
+			# if setting was not overridden by user, default for CI is 
 			# to only print failures since otherwise the output is too long 
 			# and hard to find the logs of interest
 			runner.printLogs = PrintLogs.FAILURES
 		
-		stdoutPrint(u'travis_fold:start:PySys-%s'%self.runid.replace(' ', '-'))
+		self.outputGitHubCommand(u'startGroup', self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it, 
 		# but must explicitly disable bright colors since it doesn't yet support that
@@ -65,10 +69,10 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 	def cleanup(self, **kwargs):
 		# invoked after all tests but before summary is printed, 
 		# a good place to close the folding detail section
-		stdoutPrint(u'travis_fold:end:PySys-%s'%self.runid.replace(' ', '-'))
+		self.outputGitHubCommand(u'endGroup')
 
 	def processResult(self, testObj, cycle=0, testTime=0, testStart=0, runLogOutput=u'', **kwargs):
-		# nothing to do for Travis as it doesn't collect results, we use the 
+		# nothing to do for this CI provider as it doesn't collect results, we use the 
 		# standard log printing mechanism
 		pass
 

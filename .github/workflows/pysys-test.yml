@@ -12,6 +12,7 @@ on:
 jobs:
   test:
     strategy:
+      # disable fail fast since it's useful to see test results for all platforms even if some failed
       fail-fast: false
       matrix:
         os: 
@@ -21,6 +22,7 @@ jobs:
     runs-on: ${{matrix.os}}
     
     steps:
+      # Setup the desired version of Python and PySys
       - uses: actions/checkout@v2
       - name: Set up the version of Python you want to use with PySys
         uses: actions/setup-python@v2
@@ -30,15 +32,19 @@ jobs:
         run: |
           python -m pip install --upgrade pip wheel
           pip install coverage==4.5.4 codecov pysys==1.5.1
+          
       - name: Test with PySys
         working-directory: test
         continue-on-error: true
+        env:
+          PYSYS_COLOR: true
         run: |
           pysys.py run --threads=auto --purge --record --mode=ALL -XpythonCoverage
           echo "::set-output name=action_fruit::strawberry"
           echo "::debug::Set the Octocat variable"
           echo "::warning file=pysysproject.xml,line=2,col=5::Missing semicolon"
           echo "::error file=test/pysysproject.xml,line=2,col=5::Some error"
+          set
 
       - name: Upload logs
         uses: actions/upload-artifact@v2
