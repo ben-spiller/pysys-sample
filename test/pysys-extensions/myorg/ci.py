@@ -46,7 +46,7 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 
 	def outputGitHubCommand(self, cmd, value=u'', params=u'', ):
 		# syntax is: ::workflow-command parameter1={data},parameter2={data}::{command value}
-		stdoutPrint(u'::%s%s%s'%(cmd, u' '+params if params else u'', u'::%s'%value if value else u''))
+		stdoutPrint(u'::%s%s::%s'%(cmd, u' '+params if params else u'', value))
 
 	def setup(self, numTests=0, cycles=1, xargs=None, threads=0, testoutdir=u'', runner=None, **kwargs):
 		self.runid = os.path.basename(testoutdir)
@@ -61,9 +61,9 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 		
 		self.outputGitHubCommand(u'group', self.runid)
 		
-		# enable coloring automatically, since this CI provider supports it, 
-		# but must explicitly disable bright colors since it doesn't yet support that
+		# enable coloring automatically, since this CI provider supports it
 		runner.project.formatters.stdout.color = True
+		# in this provider, colors render more clearly with bright=False
 		ColorLogFormatter.configureANSIEscapeCodes(bright=False)
 
 	def cleanup(self, **kwargs):
