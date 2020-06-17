@@ -40,13 +40,21 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 	if the ``GITHUB_ACTIONS=true`` environment variable is set).
 	
 	"""
-		
+	
+	maxAnnotations = 10-1
+	"""
+	GitHub currently has a limit on the number of annotations per step (and also per job, and per API call etc). 
+	
+	So make sure we don't use up our allocation of annotations with less important ones and then be unable to add a 
+	summary annotation. 
+	"""
+	
 	def isEnabled(self, **kwargs):
 		return os.getenv('GITHUB_ACTIONS','')=='true'
 
 	def outputGitHubCommand(self, cmd, value=u'', params=u'', ):
 		# syntax is: ::workflow-command parameter1={data},parameter2={data}::{command value}
-		stdoutPrint(u'::%s%s::%s'%(cmd, u' '+params if params else u'', value))
+		stdoutPrint(u'::%s%s::%s'%(cmd, u' '+params if params else u'', value.replace('\n', '%0A')))
 
 	def setup(self, numTests=0, cycles=1, xargs=None, threads=0, testoutdir=u'', runner=None, **kwargs):
 		self.runid = os.path.basename(testoutdir)
@@ -59,7 +67,7 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 			# and hard to find the logs of interest
 			pass #runner.printLogs = PrintLogs.FAILURES
 		
-		self.outputGitHubCommand(u'group', u'Logs for failed tests: %s' % self.runid)
+		self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it
 		runner.project.formatters.stdout.color = True
