@@ -52,4 +52,5 @@ jobs:
           # Artifact name
           name: pysys-${{matrix.os}}.log
           # A file, directory or wildcard pattern that describes what to upload
-          path: test/pysys-junit-report/TEST-MyApp_cor_001.xml
+          path: test/pysys-junit-report
+          #/TEST-MyApp_cor_001.xml
