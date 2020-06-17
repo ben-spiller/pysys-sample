@@ -11,6 +11,7 @@ class PySysTest(BaseTest):
 		stdoutPrint('::notice::This is an info message with notice')
 		stdoutPrint('::note::This is an info message with note')
 		stdoutPrint('::error::This is a message with <h1>Heading</h2> < angle brackets')
+		
 		stdoutPrint('::error::This is a message with chars !*\'();:@&=+$,/?#[] and %25 in it plus a " quote')
 		stdoutPrint('::error::This is a 1 multi-line%s- end of message'%(100*'%0A   message'))
 		#stdoutPrint('::error::This is a 2 multi-line%s- end of message'%(1000*'%0A   message'))

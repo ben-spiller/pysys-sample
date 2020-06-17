@@ -56,7 +56,7 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 
 	def outputGitHubCommand(self, cmd, value=u'', params=u'', ):
 		# syntax is: ::workflow-command parameter1={data},parameter2={data}::{command value}
-		stdoutPrint(u'::%s%s::%s'%(cmd, u' '+params if params else u'', value.replace('\n', '%0A')))
+		stdoutPrint(u'::%s%s::%s'%(cmd, u' '+params if params else u'', value.replace('%', '%25').replace('\n', '%0A')))
 
 	def setup(self, numTests=0, cycles=1, xargs=None, threads=0, testoutdir=u'', runner=None, **kwargs):
 		self.runid = os.path.basename(testoutdir)
@@ -67,7 +67,7 @@ class GitHubActionsCIWriter(BaseRecordResultsWriter):
 			# if setting was not overridden by user, default for CI is 
 			# to only print failures since otherwise the output is too long 
 			# and hard to find the logs of interest
-			pass #runner.printLogs = PrintLogs.FAILURES
+			runner.printLogs = PrintLogs.FAILURES
 		
 		self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
 		

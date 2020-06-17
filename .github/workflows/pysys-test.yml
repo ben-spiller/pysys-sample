@@ -35,9 +35,12 @@ jobs:
           
       - name: Test with PySys
         working-directory: test
-        #continue-on-error: true
+        env:
+          PYSYS_DEFAULT_THREADS_PER_CPU=1.5
         run: |
           python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage
+
+        # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: ${{always()}}
 
       - name: Upload logs
         uses: actions/upload-artifact@v2
