@@ -41,9 +41,11 @@ jobs:
 
       - name: Upload logs
         uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+
         with:
           # Artifact name
-          name: pysys-${{matrix.os}}.log
+          name: pysys-junit-${{matrix.os}}
           # A file, directory or wildcard pattern that describes what to upload
           path: test/pysys-junit-report
           #/TEST-MyApp_cor_001.xml
