@@ -149,7 +149,9 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
 		
-		self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()), params=u'file='+self.runner.project.projectFile.replace('\\','/').replace('/pysysproject.xml',''))
+		self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()), 
+			# better than the default .github is to include the path to the project file
+			params=u'file='+self.runner.project.projectFile.replace('\\','/'))
 
 	def processResult(self, testObj, cycle=0, testTime=0, testStart=0, runLogOutput=u'', **kwargs):
 		super(GitHubActionsCIWriter, self).processResult(testObj, cycle=cycle, testTime=testTime, 

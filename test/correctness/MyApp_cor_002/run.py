@@ -31,3 +31,4 @@ class PySysTest(BaseTest):
 		self.assertThat('a == b', a='Hello world', b='Hello world')
 		self.assertThat('a == b', a='Hello world', b='Hello!')
 		
+		# changes in last line
