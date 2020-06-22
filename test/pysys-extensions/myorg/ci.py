@@ -124,6 +124,8 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		super(GitHubActionsCIWriter, self).setup(numTests=numTests, cycles=cycles, xargs=xargs, threads=threads, 
 			testoutdir=testoutdir, runner=runner, **kwargs)
 		
+		self.runner = runner
+		
 		self.runid = os.path.basename(testoutdir)
 		self.numTests = numTests
 		
@@ -147,7 +149,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
 		
-		self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()))
+		self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()), params=u'file='+self.runner.project.projectFile.replace('\\','/'))
 
 	def processResult(self, testObj, cycle=0, testTime=0, testStart=0, runLogOutput=u'', **kwargs):
 		super(GitHubActionsCIWriter, self).processResult(testObj, cycle=cycle, testTime=testTime, 
@@ -155,7 +157,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		
 		if self.maxAnnotations > 0:
 			# TODO: only for errors
-			msg = runLogOutput #stripColorEscapeSequences(runLogOutput)
+			msg = stripColorEscapeSequences(runLogOutput)
 			self.maxAnnotations -= 1
 			if self.maxAnnotations == 0: msg += '\n(annotation limit reached; for any additional test failures, see the detailed log)'
 			self.outputGitHubCommand(u'error', msg, params='file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/'))
