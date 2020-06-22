@@ -36,7 +36,7 @@ jobs:
       - name: Test with PySys
         working-directory: test
         env:
-          PYSYS_DEFAULT_THREADS_PER_CPU=1.5
+          PYSYS_DEFAULT_THREADS_PER_CPU: 1.5
         run: |
           python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage
 
