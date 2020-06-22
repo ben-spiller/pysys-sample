@@ -1,4 +1,5 @@
 # some changes in line 1 
+# changes in line 2
 from pysys.constants import *
 from pysys.basetest import BaseTest
 from pysys.utils.logutils import ColorLogFormatter, stdoutPrint
