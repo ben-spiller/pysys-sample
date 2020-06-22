@@ -66,6 +66,9 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 		:return list[str]: Lines summarizing the test results. 
 		"""
 		r = []
+		
+		# TODO: add summary of outcome counts
+		
 		r.append("Summary of negative outcomes: ")
 		fails = 0
 		for cycle in self.results:
@@ -100,7 +103,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 	
 	"""
 	
-	maxAnnotations = 10-1
+	maxAnnotations = 10-2 # one is used up for the non-zero exit status and one is used for the summary
 	"""
 	GitHub currently has a limit on the number of annotations per step (and also per job, and per API call etc). 
 	
@@ -151,12 +154,10 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			testStart=testStart, runLogOutput=runLogOutput, **kwargs)
 		
 		if self.maxAnnotations > 0:
-			msg = stripColorEscapeSequences(runLogOutput)
+			# TODO: only for errors
+			msg = runLogOutput #stripColorEscapeSequences(runLogOutput)
 			self.maxAnnotations -= 1
 			if self.maxAnnotations == 0: msg += '\n(annotation limit reached; for any additional test failures, see the detailed log)'
 			self.outputGitHubCommand(u'error', msg, params='file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/'))
 			
-		# nothing to do for this CI provider as it doesn't collect results, we use the 
-		# standard log printing mechanism
-		pass
 
