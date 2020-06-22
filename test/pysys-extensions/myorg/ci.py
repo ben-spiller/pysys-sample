@@ -124,6 +124,8 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		super(GitHubActionsCIWriter, self).setup(numTests=numTests, cycles=cycles, xargs=xargs, threads=threads, 
 			testoutdir=testoutdir, runner=runner, **kwargs)
 		
+		self.remainingAnnotations = self.maxAnnotations-2 # one is used up for the non-zero exit status and one is used for the summary
+
 		self.runner = runner
 		
 		self.runid = os.path.basename(testoutdir)
@@ -133,7 +135,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			# if setting was not overridden by user, default for CI is 
 			# to only print failures since otherwise the output is too long 
 			# and hard to find the logs of interest
-			runner.printLogs = PrintLogs.FAILURES
+			runner.printLogs = PrintLogs.NONE
 		
 		self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
 		
@@ -157,11 +159,14 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		super(GitHubActionsCIWriter, self).processResult(testObj, cycle=cycle, testTime=testTime, 
 			testStart=testStart, runLogOutput=runLogOutput, **kwargs)
 		
-		if self.maxAnnotations > 0:
+		if self.remainingAnnotations > 0:
 			# TODO: only for errors
+			# TODO: try to include line number if possible
+			# Currently, GitHub actions doesn't show the annotation against the source code unless the specified line 
+			# number is one of the lines changes or surrounding context lines, but we do the best we can
 			msg = stripColorEscapeSequences(runLogOutput)
-			self.maxAnnotations -= 1
-			if self.maxAnnotations == 0: msg += '\n(annotation limit reached; for any additional test failures, see the detailed log)'
+			self.remainingAnnotations -= 1
+			if self.remainingAnnotations == 0: msg += '\n(annotation limit reached; for any additional test failures, see the detailed log)'
 			self.outputGitHubCommand(u'error', msg, params='file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/'))
 			
 
