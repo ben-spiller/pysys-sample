@@ -55,9 +55,11 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 			self.results[cycle] = {}
 			for outcome in PRECEDENT: self.results[cycle][outcome] = []
 		self.threads = threads
+		self.outcomes = {o: 0 for o in PRECEDENT}
 
 	def processResult(self, testObj, cycle=-1, testTime=-1, testStart=-1, **kwargs):
 		self.results[cycle][testObj.getOutcome()].append( (testObj.descriptor.id, testObj.getOutcomeReason(), testObj.descriptor.testDir, testObj.output))
+		self.outcomes[testObj.getOutcome()] += 1
 		self.duration = self.duration + testTime
 	
 	def getResultSummaryLines(self):
@@ -68,8 +70,15 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 		"""
 		r = []
 		
-		# TODO: add summary of outcome counts
-		
+		# numeric summaries
+		executed = sum(self.outcomes.values())
+		failednumber = sum([self.outcomes[o] for o in FAILS])
+		passed = ', '.join(['%d %s'%(self.outcomes[o], LOOKUP[o]) for o in PRECEDENT if o not in FAILS and self.outcomes[o]>0])
+		failed = ', '.join(['%d %s'%(self.outcomes[o], LOOKUP[o]) for o in PRECEDENT if o in FAILS and self.outcomes[o]>0])
+		if passed: r.append('%s (%0.1f%%)'%(passed, 100.0 * (executed-failednumber) / executed))
+		if failed: r.append('%s'%failed)
+		r.append('')
+
 		r.append("Summary of negative outcomes: ")
 		fails = 0
 		for cycle in self.results:
@@ -90,7 +99,9 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 						if self.showOutputDir:
 							r.append("      %s"% os.path.normpath(os.path.relpath(outputdir)))
 						if self.showTestDir:
-							r.append("      %s"% os.path.normpath(os.path.relpath(testdir)))
+							testDir = os.path.normpath(os.path.relpath(testdir))
+							if testDir != id: # no point logging the same thing twice
+								r.append("      %s"% testDir)
 							
 						if self.showOutcomeReason and reason:
 							r.append("      %s"% reason)
@@ -161,14 +172,16 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			testStart=testStart, runLogOutput=runLogOutput, **kwargs)
 		
 		if self.remainingAnnotations > 0 and testObj.getOutcome() in FAILS:
-			# TODO: try to include line number if possible
 			# Currently, GitHub actions doesn't show the annotation against the source code unless the specified line 
 			# number is one of the lines changes or surrounding context lines, but we do the best we can
+			m = re.search(r' \[run\.py:(\d+)\]', runLogOutput or u'')
+			lineno = m.group(1) if m else None
+			
 			msg = stripColorEscapeSequences(runLogOutput)
 			self.remainingAnnotations -= 1
 			if self.remainingAnnotations == 0: msg += '\n(annotation limit reached; for any additional test failures, see the detailed log)'
 			self.outputGitHubCommand(u'group', u'(GitHub annotation)')
-			self.outputGitHubCommand(u'warning', msg, params=u'file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/'))
+			self.outputGitHubCommand(u'warning', msg, params=u'file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/')+((u',line=%s'%lineno) if lineno else u''))
 			self.outputGitHubCommand(u'endgroup')
 
 			

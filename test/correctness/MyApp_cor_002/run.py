@@ -28,7 +28,7 @@ class PySysTest(BaseTest):
 		#self.skipTest('because foo')
 
 	def validate(self):
-		self.assertThat('a == b', a='Hello world', b='Hello world')
+		self.assertThat('a == b', a='Hello world', b='Hello world') # change here
 		self.assertThat('a == b', a='Hello world', b='Hello!')
 		
 		# changes in last line
