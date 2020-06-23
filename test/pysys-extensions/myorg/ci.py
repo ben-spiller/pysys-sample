@@ -39,11 +39,23 @@ def stripColorEscapeSequences(text):
 	
 class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 	"""
-	Base class useful for CI writers that creates a textual summary of the outcomes from the whole test run. 
+	Base class useful for CI writers that creates a textual (non-coloured) summary of the outcomes from the whole test run. 
 	"""
+	
 	showOutcomeReason = True
-	showOutputDir = False
+	"""
+	Configures whether the summary text includes the reason for each failure. 
+	"""
+	
 	showTestDir = True
+	"""
+	Configures whether the summary text includes the (relative) path to the test directory for each failure. 
+	"""
+	
+	showOutputDir = False
+	"""
+	Configures whether the summary text includes the (relative) path to the output directory for each failure. 
+	"""
 	
 	def setup(self, cycles=0, threads=0, **kwargs):
 		self.results = {}
@@ -113,14 +125,27 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 	
 	"""
 	
-	maxAnnotations = 10-2 # one is used up for the non-zero exit status and one is used for the summary
+	maxAnnotations = 10
 	"""
-	GitHub currently has a limit on the number of annotations per step (and also per job, and per API call etc). 
+	GitHub currently has a limit on the number of annotations per step (and also per job, and per API call etc), 
+	which is captured by this configuration property. 
 	
-	So make sure we don't use up our allocation of annotations with less important ones and then be unable to add a 
-	summary annotation. 
+	This ensure we don't use up our allocation of annotations with less important ones. Being aware of this limit 
+	also allows to us add a warning to the end of the last one to make clear no more annotations will be shown even if 
+	there are more warnings. 
 	
-	NB: there is also a 64kB limit on the total length of the annotation
+	NB: There is also a 64kB limit on the total length of each annotation.
+	"""
+	
+	failureLogAnnotations = True
+	"""
+	Configures whether annotations are added with the (run.log) log output from the first few test failures. 
+	"""
+	
+	failureSummaryAnnotations = True
+	"""
+	Configures whether an annotation is added with a summary of the number of failures and the outcome and reason 
+	for each failure. 
 	"""
 	
 	def isEnabled(self, **kwargs):
@@ -135,7 +160,8 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			testoutdir=testoutdir, runner=runner, **kwargs)
 		
 		self.remainingAnnotations = self.maxAnnotations-2 # one is used up for the non-zero exit status and one is used for the summary
-		self.annotations = []
+		if str(self.failureLogAnnotations).lower()!='true': self.remainingAnnotations = 0
+		self.failureLogAnnotations = []
 
 		self.runner = runner
 		
@@ -165,14 +191,15 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		if sum([self.outcomes[o] for o in FAILS]):
 			self.outputGitHubCommand(u'group', u'(GitHub test failure annotations)')
 			
-			self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()), 
-				# better than the default .github is to include the path to the project file
-				params=u'file='+self.runner.project.projectFile.replace('\\','/'))
+			if str(self.failureSummaryAnnotations).lower()=='true':
+				self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()), 
+					# Slightly better than the default (".github") is to include the path to the project file
+					params=u'file='+self.runner.project.projectFile.replace('\\','/'))
 			
-			if self.annotations:
-				# do them all in a group at the end since otherwise the annotation output gets mixed up with the test output 
-				# making it hard to understand
-				for a in self.annotations:
+			if self.failureLogAnnotations:
+				# Do them all in a group at the end since otherwise the annotation output gets mixed up with the test 
+				# log output making it hard to understand
+				for a in self.failureLogAnnotations:
 					self.outputGitHubCommand(*a)
 
 			self.outputGitHubCommand(u'endgroup')
@@ -189,7 +216,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			
 			msg = stripColorEscapeSequences(runLogOutput)
 			self.remainingAnnotations -= 1
-			if self.remainingAnnotations == 0: msg += '\n(annotation limit reached; for any additional test failures, see the detailed log)'
-			self.annotations.append([u'warning', msg, u'file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/')+((u',line=%s'%lineno) if lineno else u'')])
+			if self.remainingAnnotations == 0: msg += '\n\n(annotation limit reached; for any additional test failures, see the detailed log)'
+			self.failureLogAnnotations.append([u'warning', msg, u'file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/')+((u',line=%s'%lineno) if lineno else u'')])
 			
 
