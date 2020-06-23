@@ -163,19 +163,19 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
 		
 		if sum([self.outcomes[o] for o in FAILS]):
+			self.outputGitHubCommand(u'group', u'(GitHub test failure annotations)')
+			
 			self.outputGitHubCommand(u'error', u'\n'.join(self.getResultSummaryLines()), 
 				# better than the default .github is to include the path to the project file
 				params=u'file='+self.runner.project.projectFile.replace('\\','/'))
 			
-		if self.annotations:
-			# do them all in a group at the end since otherwise the annotation output gets mixed up with the test output 
-			# making it hard to understand
-			self.outputGitHubCommand(u'group', u'(GitHub test failure annotations)')
-			for a in self.annotations:
-				self.outputGitHubCommand(*a)
+			if self.annotations:
+				# do them all in a group at the end since otherwise the annotation output gets mixed up with the test output 
+				# making it hard to understand
+				for a in self.annotations:
+					self.outputGitHubCommand(*a)
+
 			self.outputGitHubCommand(u'endgroup')
-
-
 
 	def processResult(self, testObj, cycle=0, testTime=0, testStart=0, runLogOutput=u'', **kwargs):
 		super(GitHubActionsCIWriter, self).processResult(testObj, cycle=cycle, testTime=testTime, 
