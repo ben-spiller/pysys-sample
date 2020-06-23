@@ -15,6 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+# TODO: get coverage working
 
 """
 Contains writers for recording test results to Continuous Integration providers.
@@ -135,9 +136,9 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			# if setting was not overridden by user, default for CI is 
 			# to only print failures since otherwise the output is too long 
 			# and hard to find the logs of interest
-			runner.printLogs = PrintLogs.NONE
+			runner.printLogs = PrintLogs.FAILURES
 		
-		self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
+		#self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it
 		runner.project.formatters.stdout.color = True
@@ -147,7 +148,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 	def cleanup(self, **kwargs):
 		# invoked after all tests but before summary is printed, 
 		# a good place to close the folding detail section
-		self.outputGitHubCommand(u'endgroup')
+		#self.outputGitHubCommand(u'endgroup')
 
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
 		
