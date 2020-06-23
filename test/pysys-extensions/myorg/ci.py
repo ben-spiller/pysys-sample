@@ -75,17 +75,17 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 		failednumber = sum([self.outcomes[o] for o in FAILS])
 		passed = ', '.join(['%d %s'%(self.outcomes[o], LOOKUP[o]) for o in PRECEDENT if o not in FAILS and self.outcomes[o]>0])
 		failed = ', '.join(['%d %s'%(self.outcomes[o], LOOKUP[o]) for o in PRECEDENT if o in FAILS and self.outcomes[o]>0])
-		if passed: r.append('%s (%0.1f%%)'%(passed, 100.0 * (executed-failednumber) / executed))
-		if failed: r.append('%s'%failed)
+		if passed: r.append('Success outcomes: %s'%(passed))
+		if failed: r.append('Failure outcomes: %s (%0.1f%%)'%(failed, 100.0 * (failednumber) / executed))
 		r.append('')
 
-		r.append("Summary of negative outcomes: ")
+		r.append("Summary of failure outcomes: ")
 		fails = 0
 		for cycle in self.results:
 			for outcome, tests in self.results[cycle].items():
 				if outcome in FAILS : fails = fails + len(tests)
 		if fails == 0:
-			r.append("	THERE WERE NO NEGATIVE OUTCOMES")
+			r.append("	THERE WERE NO FAILURES")
 		else:
 			failedids = set()
 			for cycle in self.results:
@@ -97,11 +97,11 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 						r.append("  %s%s: %s "%( cyclestr, LOOKUP[outcome], id))
 						# directories are shown relative to the current directory (which may or may not be the test root dir)
 						if self.showOutputDir:
-							r.append("      %s"% os.path.normpath(os.path.relpath(outputdir)))
+							r.append("      %s"% os.path.normpath(os.path.relpath(outputdir))+os.sep)
 						if self.showTestDir:
 							testDir = os.path.normpath(os.path.relpath(testdir))
 							if testDir != id: # no point logging the same thing twice
-								r.append("      %s"% testDir)
+								r.append("      %s"% testDir+os.sep)
 							
 						if self.showOutcomeReason and reason:
 							r.append("      %s"% reason)
