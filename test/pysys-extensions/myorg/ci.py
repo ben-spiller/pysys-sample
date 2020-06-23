@@ -73,8 +73,8 @@ class BaseResultsSummaryCIWriter(BaseRecordResultsWriter):
 		failednumber = sum([self.outcomes[o] for o in FAILS])
 		passed = ', '.join(['%d %s'%(self.outcomes[o], LOOKUP[o]) for o in PRECEDENT if o not in FAILS and self.outcomes[o]>0])
 		failed = ', '.join(['%d %s'%(self.outcomes[o], LOOKUP[o]) for o in PRECEDENT if o in FAILS and self.outcomes[o]>0])
-		if passed: r.append('Success outcomes: %s'%(passed))
 		if failed: r.append('Failure outcomes: %s (%0.1f%%)'%(failed, 100.0 * (failednumber) / executed))
+		if passed: r.append('Success outcomes: %s'%(passed))
 		r.append('')
 
 		r.append("Summary of failure outcomes: ")
