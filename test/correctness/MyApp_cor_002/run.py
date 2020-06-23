@@ -7,7 +7,7 @@ from pysys.utils.logutils import ColorLogFormatter, stdoutPrint
 class PySysTest(BaseTest):
 	def execute(self):
 		self.log.info('Running with: %s', sys.executable)
-		# some changes
+		# some changes x
 		"""
 		stdoutPrint('::error file=test/correctness/MyApp_cor_002/run.py,line=9,col=6::This is a test failure in 002')
 		stdoutPrint('::error::This is a 1 multi-line%0Amessage')

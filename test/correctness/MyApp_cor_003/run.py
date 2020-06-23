@@ -4,7 +4,7 @@ from pysys.utils.logutils import ColorLogFormatter, stdoutPrint
 
 class PySysTest(BaseTest):
 	def execute(self):
-		pass
+		pass # change
 
 	def validate(self):
 		self.assertThat('a == b', a='Hello world', b='Hello wirld')
