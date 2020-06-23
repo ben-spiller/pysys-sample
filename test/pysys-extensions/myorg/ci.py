@@ -138,7 +138,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			# and hard to find the logs of interest
 			runner.printLogs = PrintLogs.FAILURES
 		
-		#self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
+		self.outputGitHubCommand(u'group', u'Logs for failed test run: %s' % self.runid)
 		
 		# enable coloring automatically, since this CI provider supports it
 		runner.project.formatters.stdout.color = True
@@ -148,7 +148,7 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 	def cleanup(self, **kwargs):
 		# invoked after all tests but before summary is printed, 
 		# a good place to close the folding detail section
-		#self.outputGitHubCommand(u'endgroup')
+		self.outputGitHubCommand(u'endgroup')
 
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
 		
