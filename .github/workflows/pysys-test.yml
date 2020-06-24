@@ -43,10 +43,12 @@ jobs:
           
       - name: Test with PySys
         working-directory: test
+        shell: bash
         env:
           PYSYS_DEFAULT_THREADS_PER_CPU: 1.5
         run: |
           python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage --outdir ${GITHUB_WORKSPACE}/test/pysys-output/${{matrix.test-run-id}}
+          echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
 
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: ${{always()}}
 
@@ -64,4 +66,4 @@ jobs:
 
         with:
           name: pysys-test-output-${{matrix.test-run-id}}
-          path: ${GITHUB_WORKSPACE}/test/pysys-output
+          path: ${GITHUB_WORKSPACE}/test/pysys-output/*
