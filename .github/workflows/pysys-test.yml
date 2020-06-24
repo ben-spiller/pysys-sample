@@ -17,10 +17,16 @@ jobs:
       # disable fail fast since it's useful to see test results for all platforms even if some failed
       fail-fast: false
       matrix:
-        os: 
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
+        include:
+          - test-run-id: ubuntu
+            os: ubuntu-latest
+            
+          - test-run-id: macos
+            os: macos-latest
+            
+          - test-run-id: win
+            os: windows-latest
+            
     runs-on: ${{matrix.os}}
     
     steps:
@@ -40,7 +46,7 @@ jobs:
         env:
           PYSYS_DEFAULT_THREADS_PER_CPU: 1.5
         run: |
-          python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage
+          python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage --outdir ${{matrix.test-run-id}}
 
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: ${{always()}}
 
@@ -50,7 +56,7 @@ jobs:
 
         with:
           # Artifact name
-          name: pysys-junit-${{matrix.os}}
+          name: pysys-junit-${{matrix.test-run-id}}
           # A file, directory or wildcard pattern that describes what to upload
           path: test/pysys-junit-report
           #/TEST-MyApp_cor_001.xml
