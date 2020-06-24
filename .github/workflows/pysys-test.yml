@@ -66,4 +66,4 @@ jobs:
 
         with:
           name: pysys-test-output-${{matrix.test-run-id}}
-          path: ${GITHUB_WORKSPACE}/test/pysys-output/*
+          path: test/pysys-output/*
