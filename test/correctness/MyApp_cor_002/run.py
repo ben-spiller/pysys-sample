@@ -7,6 +7,8 @@ from pysys.utils.logutils import ColorLogFormatter, stdoutPrint
 class PySysTest(BaseTest):
 	def execute(self):
 		self.log.info('Running with: %s', sys.executable)
+		self.reportPerformanceResult(12345, 'This is a performance result', '/s')
+
 		# some changes x
 		"""
 		stdoutPrint('::error file=test/correctness/MyApp_cor_002/run.py,line=9,col=6::This is a test failure in 002')
