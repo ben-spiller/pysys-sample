@@ -58,8 +58,7 @@ jobs:
         run: |
           echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
           echo steps: ${{ toJson(steps) }}
-          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
-          echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
+          
 
 
       - name: Upload performance artifacts
