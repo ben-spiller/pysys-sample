@@ -49,6 +49,9 @@ jobs:
         run: |
           python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage --outdir ${GITHUB_WORKSPACE}/test/pysys-output/${{matrix.test-run-id}}
           echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
+          echo steps: ${{ toJson(steps) }}
+          echo step outputs: ${{ toJson(steps['Test with PySys'].outputs) }}
+          echo artifacts: ${{ steps['Test with PySys'].outputs.pysys-performance-artifacts }}
 
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: ${{always()}}
 
