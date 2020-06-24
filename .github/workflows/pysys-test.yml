@@ -54,16 +54,17 @@ jobs:
 
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+        if: always()
 
         with:
           name: pysys-performance-${{matrix.test-run-id}}
-          path: test/performance_output/
+          path: ${{ steps['Test with PySys'].outputs.pysys-performance-artifacts }}
+          #path: test/performance_output/
 
       - name: Upload test failure artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ ! success() }}
+        if: ${{ failure() }}
 
         with:
-          name: pysys-test-output-${{matrix.test-run-id}}
-          path: test/pysys-output/*
+          name: pysys-output-${{matrix.test-run-id}}
+          path: test/pysys-output/${{matrix.test-run-id}}/*

@@ -7,7 +7,8 @@ from pysys.utils.logutils import ColorLogFormatter, stdoutPrint
 class PySysTest(BaseTest):
 	def execute(self):
 		self.log.info('Running with: %s', sys.executable)
-		self.reportPerformanceResult(12345, 'This is a performance result', '/s')
+		if IS_WINDOWS:
+			self.reportPerformanceResult(12345, 'This is a performance result', '/s')
 
 		# some changes x
 		"""

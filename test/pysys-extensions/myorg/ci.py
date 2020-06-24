@@ -185,6 +185,10 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		# invoked after all tests but before summary is printed, 
 		# a good place to close the folding detail section
 		self.outputGitHubCommand(u'endgroup')
+		
+		# TODO: put real paths from self.performanceReporters in here if we can
+		self.outputGitHubCommand(u'set-output', u','.join([self.runner.project.root+'/performance_output']), params='name=pysys-performance-artifacts')
+		log.critical('Performance output: "%s"', self.runner.project.root+'/performance_output')
 
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
 		
@@ -219,4 +223,20 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 			if self.remainingAnnotations == 0: msg += '\n\n(annotation limit reached; for any additional test failures, see the detailed log)'
 			self.failureLogAnnotations.append([u'warning', msg, u'file='+os.path.join(testObj.descriptor.testDir, testObj.descriptor.module).replace('\\','/')+((u',line=%s'%lineno) if lineno else u'')])
 			
-
+class ArchiveTestOutputArtifacts(BaseRecordResultsWriter):
+	maxFilesPerTest = 1000
+	maxFileSizeMB = 500.0
+	
+	maxArchiveSizeMB = 100.0
+	maxArchivesTotalSizeMB = 1000.0
+	maxArchives = 50
+	archiveAtEndOfRun = True # 
+	excludesRegex = u'' # executed against the path relative to the test root dir 
+	zipDir = '${root}/pysys-@outdir@'
+	
+	# add pysys_archive_excluded_files.txt containing list of files which we skipped
+	
+	#TODO: delete existing results before starting
+	#def shouldArchive(self, testObj, ...):
+	#	return testObj.getOutcome() in FAILS
+	# factor out archive creation into a method so people can add other archive types if they want
