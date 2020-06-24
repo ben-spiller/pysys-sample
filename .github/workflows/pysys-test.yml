@@ -37,6 +37,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Install dependencies
+        id: deps
         run: |
           python -m pip install --upgrade pip wheel
           pip install coverage==4.5.4 codecov pysys==1.5.1
@@ -58,7 +59,20 @@ jobs:
         run: |
           echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
           echo steps: ${{ toJson(steps) }}
-          
+          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
+          echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
+
+      - name: Temp debugging2
+        if: always()
+        shell: bash
+        run: |
+          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
+
+      - name: Temp debugging3
+        if: always()
+        shell: bash
+        run: |
+          echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
 
 
       - name: Upload performance artifacts
