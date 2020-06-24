@@ -44,11 +44,13 @@ jobs:
       - name: Test with PySys
         working-directory: test
         shell: bash
+        id: pysys
         env:
           PYSYS_DEFAULT_THREADS_PER_CPU: 1.5
         run: |
           python -m pysys run --threads=auto --purge --record --mode=ALL -XpythonCoverage --outdir ${GITHUB_WORKSPACE}/test/pysys-output/${{matrix.test-run-id}}
-        # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: ${{always()}}
+        
+        # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: always()
 
       - name: Temp debugging
         if: always()
@@ -56,8 +58,8 @@ jobs:
         run: |
           echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
           echo steps: ${{ toJson(steps) }}
-          echo step outputs: ${{ toJson(steps['Test with PySys'].outputs) }}
-          echo artifacts: ${{ steps['Test with PySys'].outputs.pysys-performance-artifacts }}
+          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
+          echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
 
 
       - name: Upload performance artifacts
@@ -71,7 +73,7 @@ jobs:
 
       - name: Upload test failure artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ failure() }}
+        if: failure()
 
         with:
           name: pysys-output-${{matrix.test-run-id}}
