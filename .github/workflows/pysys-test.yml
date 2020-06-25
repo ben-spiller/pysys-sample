@@ -53,56 +53,14 @@ jobs:
         
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: always()
 
-      - name: Temp debugging
-        if: always() && contains(steps.pysys.outputs, 'pysys-performance-artifacts')
-        shell: bash
-        run: |
-          echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
-          echo steps: ${{ toJson(steps) }}
-          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
-          echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
-
-
-      - name: Temp debugging cmp to empty string
-        if: always() && steps.pysys.outputs.pysys-performance-artifacts == ''
-        shell: bash
-        run: |
-          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
-
-      - name: Temp debugging cmp to null
-        if: always() && steps.pysys.outputs.pysys-performance-artifacts == null
-        shell: bash
-        run: |
-          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
-
-      - name: Temp debugging2
-        if: always() && steps.pysys.outputs.pysys-performance-artifacts != false
-        shell: bash
-        run: |
-          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
-
-
-      - name: Temp debugging - true
-        if: true
-        shell: bash
-        run: |
-          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
-
-      - name: Temp debugging print it
-        if: always()
-        shell: bash
-        run: |
-          echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
-
-
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
+        # To avoid warnings, only do this if some performance results were generated
         if: always() && steps.pysys.outputs.pysys-performance-artifacts != null
 
         with:
           name: pysys-performance-${{matrix.test-run-id}}
           path: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
-          #path: test/performance_output/
 
       - name: Upload test failure artifacts
         uses: actions/upload-artifact@v2
