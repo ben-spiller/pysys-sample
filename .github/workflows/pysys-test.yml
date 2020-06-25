@@ -97,7 +97,7 @@ jobs:
 
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
-        if: always()
+        if: always() && steps.pysys.outputs.pysys-performance-artifacts != null
 
         with:
           name: pysys-performance-${{matrix.test-run-id}}
