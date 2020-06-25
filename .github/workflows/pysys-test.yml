@@ -64,19 +64,26 @@ jobs:
 
 
       - name: Temp debugging cmp to empty string
-        if: steps.pysys.outputs.pysys-performance-artifacts == ''
+        if: always() and steps.pysys.outputs.pysys-performance-artifacts == ''
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
 
       - name: Temp debugging cmp to null
-        if: steps.pysys.outputs.pysys-performance-artifacts == null
+        if: always() and steps.pysys.outputs.pysys-performance-artifacts == null
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
 
       - name: Temp debugging2
-        if: steps.pysys.outputs.pysys-performance-artifacts != false
+        if: always() and steps.pysys.outputs.pysys-performance-artifacts != false
+        shell: bash
+        run: |
+          echo step outputs: ${{ toJson(steps.pysys.outputs) }}
+
+
+      - name: Temp debugging - true
+        if: true
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
