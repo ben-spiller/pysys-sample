@@ -187,7 +187,8 @@ class GitHubActionsCIWriter(BaseResultsSummaryCIWriter):
 		self.outputGitHubCommand(u'endgroup')
 		
 		# TODO: put real paths from self.performanceReporters in here if we can
-		self.outputGitHubCommand(u'set-output', u','.join([self.runner.project.root+'/performance_output']), params='name=pysys-performance-artifacts')
+		if os.path.exists(self.runner.project.root+'/performance_output'):
+			self.outputGitHubCommand(u'set-output', u','.join([self.runner.project.root+'/performance_output']), params='name=pysys-performance-artifacts')
 		log.critical('Performance output: "%s"', self.runner.project.root+'/performance_output')
 
 		super(GitHubActionsCIWriter, self).cleanup(**kwargs)
@@ -232,6 +233,7 @@ class ArchiveTestOutputArtifacts(BaseRecordResultsWriter):
 	maxArchives = 50
 	archiveAtEndOfRun = True # 
 	excludesRegex = u'' # executed against the path relative to the test root dir 
+	includesRegex = u'' # in case you want to extract just a single type of file? but could use collect for that
 	zipDir = '${root}/pysys-@outdir@'
 	
 	# add pysys_archive_excluded_files.txt containing list of files which we skipped

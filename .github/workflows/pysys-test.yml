@@ -54,7 +54,7 @@ jobs:
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: always()
 
       - name: Temp debugging
-        if: steps.pysys.outputs.pysys-performance-artifactsXXXX
+        if: contains(steps.pysys.outputs, 'pysys-performance-artifacts')
         shell: bash
         run: |
           echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
@@ -63,7 +63,7 @@ jobs:
           echo artifacts: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
 
       - name: Temp debugging2
-        if: steps.pysys.outputs.pysys-performance-artifacts
+        if: steps.pysys.outputs.pysys-performance-artifacts != false
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
