@@ -54,7 +54,7 @@ jobs:
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: always()
 
       - name: Temp debugging
-        if: contains(steps.pysys.outputs, 'pysys-performance-artifacts')
+        if: always() && contains(steps.pysys.outputs, 'pysys-performance-artifacts')
         shell: bash
         run: |
           echo path is: ${GITHUB_WORKSPACE}/test/pysys-output
@@ -64,19 +64,19 @@ jobs:
 
 
       - name: Temp debugging cmp to empty string
-        if: always() and steps.pysys.outputs.pysys-performance-artifacts == ''
+        if: always() && steps.pysys.outputs.pysys-performance-artifacts == ''
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
 
       - name: Temp debugging cmp to null
-        if: always() and steps.pysys.outputs.pysys-performance-artifacts == null
+        if: always() && steps.pysys.outputs.pysys-performance-artifacts == null
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
 
       - name: Temp debugging2
-        if: always() and steps.pysys.outputs.pysys-performance-artifacts != false
+        if: always() && steps.pysys.outputs.pysys-performance-artifacts != false
         shell: bash
         run: |
           echo step outputs: ${{ toJson(steps.pysys.outputs) }}
