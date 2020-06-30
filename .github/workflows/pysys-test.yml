@@ -68,4 +68,13 @@ jobs:
 
         with:
           name: pysys-output-${{matrix.test-run-id}}
-          path: test/pysys-output/${{matrix.test-run-id}}/*
+          path: test/pysys-output/${{matrix.test-run-id}}
+
+      - name: Upload test failure artifacts multiple
+        uses: actions/upload-artifact@v2
+        if: failure()
+
+        with:
+          name: pysys-output-${{matrix.test-run-id}}-multiple
+          path: test/pysys-output/${{matrix.test-run-id}}/MyApp_cor_001/*,test/pysys-output/${{matrix.test-run-id}}/MyApp_cor_002/*
+        
