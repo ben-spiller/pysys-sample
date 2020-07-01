@@ -60,9 +60,8 @@ jobs:
         uses: codecov/codecov-action@v1
         if: always()
         with:
-          #file: test/__pysys_python_coverage_${{matrix.test-run-id}}/*
-          file: test/__pysys_output_${{matrix.test-run-id}}/*
-          flags: unittests # optional
+          file: test/__pysys_python_coverage_${{matrix.test-run-id}}/*
+          #file: test/__pysys_output_${{matrix.test-run-id}}/*
       
       - name: Upload coverage debugging artifact
         uses: actions/upload-artifact@v2

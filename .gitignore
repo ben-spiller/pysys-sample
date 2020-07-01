@@ -1,8 +1,8 @@
 # PySys output directories
-__pysys_*
 Output/
 pysys-junit-report/
 pysys-testsummary*.xml
+test/__*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
