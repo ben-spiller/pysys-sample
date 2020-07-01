@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         id: deps
         run: |
-		  # is wheel needed?
+          # is wheel needed?
           python -m pip install --upgrade pip
           pip install coverage
           # codecov 
