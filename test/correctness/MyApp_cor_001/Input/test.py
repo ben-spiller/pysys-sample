@@ -1,5 +1,6 @@
 print('Hello world')
-if False:
+x = 123
+if 123 == x:
 	print ('Nay')
 else:
 	print ('Yey')
