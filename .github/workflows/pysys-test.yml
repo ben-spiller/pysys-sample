@@ -41,8 +41,8 @@ jobs:
         run: |
           # is wheel needed?
           python -m pip install --upgrade pip
-          pip install coverage
-          # codecov 
+          # use older version of coverage as 5.0 requires an SQLite version that doesn't work on this macos image currently
+          pip install coverage==4.5.4
           pip install pysys==1.5.1
           
       - name: Test with PySys
@@ -60,17 +60,9 @@ jobs:
         uses: codecov/codecov-action@v1
         if: always()
         with:
-          file: test/__pysys_python_coverage_${{matrix.test-run-id}}/.coverage
-          #file: test/__pysys_output_${{matrix.test-run-id}}/*
+          #file: test/__pysys_python_coverage_${{matrix.test-run-id}}/.coverage
+          file: test/__pysys_python_coverage_${{matrix.test-run-id}}/*
       
-      - name: Upload coverage debugging artifact
-        uses: actions/upload-artifact@v2
-        if: always()
-
-        with:
-          name: pysys-coverage-${{matrix.test-run-id}}
-          path: test/__pysys_python_coverage_${{matrix.test-run-id}}/
-
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
         # To avoid warnings, only do this if some performance results were generated
