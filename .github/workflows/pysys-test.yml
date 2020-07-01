@@ -58,9 +58,19 @@ jobs:
         with:
           #token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           #file: ./coverage.xml # optional
-          file: test/__pysys_output_${{matrix.test-run-id}}/.coverage
+          file: test/__pysys_output_${{matrix.test-run-id}}/*
           flags: unittests # optional
           name: codecov-umbrella # optional
+
+
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v2
+        if: always()
+
+        with:
+          name: pysys-coverage-${{matrix.test-run-id}}
+          path: test/__pysys_output_${{matrix.test-run-id}}/
 
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
