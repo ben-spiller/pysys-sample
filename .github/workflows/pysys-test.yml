@@ -58,7 +58,7 @@ jobs:
         with:
           #token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           #file: ./coverage.xml # optional
-          file: test/__pysys_output_${{matrix.test-run-id}}/*
+          file: test/__pysys_output_${{matrix.test-run-id}}/.coverage
           flags: unittests # optional
           name: codecov-umbrella # optional
 
