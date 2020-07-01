@@ -54,6 +54,7 @@ jobs:
         # If any tests fail, PySys will return an error code and subsequent steps won't execute unless they have an if: always()
 
       - uses: codecov/codecov-action@v1
+        if: always()
         with:
           #token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           #file: ./coverage.xml # optional
@@ -75,14 +76,5 @@ jobs:
         if: failure()
 
         with:
-          name: __pysys_output-${{matrix.test-run-id}}
+          name: pysys_output_${{matrix.test-run-id}}
           path: test/__pysys_output/${{matrix.test-run-id}}
-
-      - name: Upload test failure artifacts multiple
-        uses: actions/upload-artifact@v2
-        if: failure()
-
-        with:
-          name: __pysys_output-${{matrix.test-run-id}}-multiple
-          path: test/__pysys_output/${{matrix.test-run-id}}/MyApp_cor_001/*,test/__pysys_output/${{matrix.test-run-id}}/MyApp_cor_002/*
-        
