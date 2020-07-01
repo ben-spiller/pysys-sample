@@ -3,7 +3,7 @@ from pysys.basetest import BaseTest
 
 class PySysTest(BaseTest):
 	def execute(self):
-		self.startPython([self.input+'/test.py'])
+		self.startPython([self.input+'/test.py'], stdouterr='test')
 
 	def validate(self):
 		pass
