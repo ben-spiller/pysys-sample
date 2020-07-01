@@ -1,4 +1,5 @@
-# PySys Output directories
+# PySys output directories
+__pysys_*
 Output/
 pysys-junit-report/
 pysys-testsummary*.xml
