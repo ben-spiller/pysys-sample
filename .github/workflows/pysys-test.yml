@@ -60,8 +60,7 @@ jobs:
         uses: codecov/codecov-action@v1
         if: always()
         with:
-          #file: test/__pysys_python_coverage_${{matrix.test-run-id}}/.coverage
-          file: test/__pysys_python_coverage_${{matrix.test-run-id}}/*
+          file: test/__pysys_python_coverage_${{matrix.test-run-id}}/.coverage
       
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
