@@ -65,16 +65,16 @@ jobs:
       - name: Upload performance artifacts
         uses: actions/upload-artifact@v2
         # To avoid warnings, only do this if some performance results were generated
-        if: always() && steps.pysys.outputs.pysys-performance-artifacts != null
+        if: always() && steps.pysys.outputs.steps.pysys.outputs.artifact_CSVPerformanceReport != null
 
         with:
           name: pysys-performance-${{matrix.test-run-id}}
-          path: ${{ steps.pysys.outputs.pysys-performance-artifacts }}
+          path: ${{ steps.pysys.outputs.CSVPerformanceReport }}
 
       - name: Upload test failure artifacts
         uses: actions/upload-artifact@v2
-        if: failure()
+        if: always() && steps.pysys.outputs.artifact_TestOutputArchiveDir != null
 
         with:
           name: pysys_output_${{matrix.test-run-id}}
-          path: test/__pysys_output/${{matrix.test-run-id}}
+          path: ${{ steps.pysys.outputs.TestOutputArchiveDir }}
