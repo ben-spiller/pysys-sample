@@ -64,7 +64,7 @@
 	
 
 	<property name="pythonCoverageArgs" value=""/>
-	<property name="pythonCoverageDir" value="__pysys_python_coverage_@OUTDIR@"/>
+	<property name="pythonCoverageDir" value="__coverage_python_@OUTDIR@"/>
 	<collect-test-output pattern=".coverage*" outputDir="${pythonCoverageDir}" outputPattern="@FILENAME@_@TESTID@_@UNIQUE@"/>
 	
 	<project-help>
