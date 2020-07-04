@@ -69,12 +69,12 @@ jobs:
 
         with:
           name: pysys-performance-${{matrix.test-run-id}}
-          path: ${{ steps.pysys.outputs.CSVPerformanceReport }}
+          path: ${{ steps.pysys.outputs.artifact_CSVPerformanceReport }}
 
       - name: Upload test failure artifacts
         uses: actions/upload-artifact@v2
-        if: always() && steps.pysys.outputs.artifact_TestOutputArchiveDir != null
+        if: always() && steps.pysys.outputs.artifact_TestOutputArchiveDir
 
         with:
           name: pysys_output_${{matrix.test-run-id}}
-          path: ${{ steps.pysys.outputs.TestOutputArchiveDir }}
+          path: ${{ steps.pysys.outputs.artifact_TestOutputArchiveDir }}
