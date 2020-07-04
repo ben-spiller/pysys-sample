@@ -27,7 +27,7 @@ __all__ = ["GitHubActionsCIWriter"]
 import time, logging, sys, threading, os
 import re
 
-from pysys.constants import PrintLogs, PRECEDENT, FAILS, FAILS, LOOKUP
+from pysys.constants import *
 from pysys.writer import BaseRecordResultsWriter, BaseResultsWriter
 from pysys.utils.logutils import ColorLogFormatter, stdoutPrint
 from pysys.utils.pycompat import PY2
@@ -115,6 +115,7 @@ class TestOutcomeSummaryGenerator(BaseResultsWriter):
 		result = []
 		def log(fmt, *args, **kwargs):
 			result.append(fmt%args)
+		self.logSummary(log=log, **kwargs)
 		return '\n'.join(result)
 
 	def logSummary(self, log, showDuration=None, showOutcomeStats=None, showOutcomeReason=None, showOutputDir=None, showTestIdList=None, **kwargs):
