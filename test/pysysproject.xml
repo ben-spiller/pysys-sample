@@ -8,6 +8,8 @@
 	<property osfamily="osfamily"/>
 
 	<!-- User-defined properties -->
+	<property name="appHome" value="${testRootDir}/../src" pathMustExist="true"/>	
+
 
 	<!-- Standard default settings. See sample project file and API docs for more details. -->
 	<property name="defaultAbortOnError" value="true"/>	
