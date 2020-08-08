@@ -3,7 +3,7 @@ from pysys.constants import *
 
 class PySysTest(pysys.basetest.BaseTest):
 	def execute(self):
-		# Pick a free TCP port to start the server on (this allows running many tests in parallel without clashes)
+		# Tell PySys to pick a free TCP port to start the server on (this allows running many tests in parallel without clashes)
 		serverPort = self.getNextAvailableTCPPort()
 		
 		# A common system testing task is pre-processing a file, for example to substitute in required testing parameters
@@ -48,23 +48,55 @@ class PySysTest(pysys.basetest.BaseTest):
 		self.startPython([self.input+'/httpget.py', f'http://localhost:{serverPort}/data'], stdouterr='httpget_data_dir', background=True)
 		self.waitForBackgroundProcesses(excludes=[server])
 
+		# Most projects will want to define test plugins to allow sharing functionality across tests. In this case 
+		# we've defined "myserver" as an alias for our MyServerTestPlugin
+		server = self.myserver.startServer(arguments=[])
+
 		"""
 		add:
 		
-		modes - XML vs JSON?
+		a test showing process handling options: stopProcss, backgroundprocesses, testplugin
+			stopProcess(process[, abortOnError])
+			
+			including error handling
+			
+			waitForSocket(port[, host, timeout, ])
+
+
+
+		
+		a test showing various assertion styles: (same assertion in lots of ways?)
+				
+				# This is the typical case - "value" is assigned to the first (...) regex group, and keyword parameters 
+			# (e.g. "expected=") are used to validate that the "value" is correct
+			self.assertThatGrep('myserver.log', r'Successfully authenticated user "([^"]*)"', 
+					"value == expected", expected='myuser')
+				assertDiff with preprocessing to remove timestamps
+			
+			getExprFromFile(path, expr[, groups, ])
+
+			include abort/addOutcome
+		
+		a test showing multiple modes, perhaps encoding??
+		
+			modes - XML vs JSON?
+			I18N testing
+		
+		use of a test plugin to start our server. maybe set user data on the return value?
+		
+		manual tester: with web browser
 		
 		performance test
 			with execution order hint
 			disableCoverage
 		robustness with memory and flexible iteration count
+		
+		
+		Skipping based on OS - skip in all cases
 		"""
 
 	def validate(self):
 		self.logFileContents('my_server.out')
-		self.logFileContents('curl-root.out')
-		self.logFileContents('curl-root.err')
-		self.logFileContents('curl-data.out')
-		self.logFileContents('curl-myfile.out')
 		
 		self.assertThat('message == expected', 
 			message=pysys.utils.fileutils.loadJSON(self.output+'/httpget_myfile.out')['message'], 

@@ -30,6 +30,7 @@ if args.configfile:
 log.setLevel(getattr(logging, args.loglevel.upper()))
 
 class MyHandler(http.server.SimpleHTTPRequestHandler):
+	# TODO: add something that returns an error
 	pass
 
 httpd = socketserver.TCPServer(("", args.port), MyHandler)
